@@ -19,14 +19,14 @@ export default function About() {
                 </svg>
             ),
             label: "GitLab",
-            url: "https://gitlab.com/"
+            url: "https://gitlab.com/HrushikeshAnandSarangi"
         },
         {
             icon: (
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-code"><rect width="18" height="18" x="3" y="3" rx="2" /><path d="m10 10-2 2 2 2" /><path d="m14 14 2-2-2-2" /></svg>
             ),
             label: "StackOverflow",
-            url: "https://stackoverflow.com/"
+            url: "https://beta.stackoverflow.com/users/27047115/hrushikesh-anand-sarangi"
         },
         {
             icon: (
@@ -37,7 +37,7 @@ export default function About() {
                 </svg>
             ),
             label: "LinkedIn",
-            url: "https://linkedin.com/in/"
+            url: "https://www.linkedin.com/in/hrushikesh-anand-sarangi-645b02269/"
         },
         {
             icon: (
@@ -46,7 +46,7 @@ export default function About() {
                 </svg>
             ),
             label: "X (Twitter)",
-            url: "https://x.com/"
+            url: "https://x.com/anand_sarangi"
         },
     ];
 
@@ -64,7 +64,7 @@ export default function About() {
             <ScrollReveal delay={0.15}>
                 <div class="bg-[var(--color-surface)]/70 backdrop-blur-sm rounded-3xl p-8 md:p-10 border border-[var(--color-border)]">
                     <p class="text-lg leading-[1.8] text-[var(--color-text)]">
-                        I'm a systems developer who thrives at the intersection of hardware and software. I work close to the metal — building efficient, reliable systems where every clock cycle counts and every byte matters. From kernel-level programming to distributed infrastructure, I enjoy solving problems that demand precision and deep understanding.
+                        I study Industrial Design at NIT Rourkela, which means I was supposed to spend my time thinking about ergonomics and product aesthetics. I still do but somewhere along the way I also started building deployment infrastructure, integrating ML inference engines via native FFI, writing ground station software for UAVs, and tinkering with blockchain VM constraints on Solana. The common thread isn't a stack. It's curiosity about how things actually work underneath.
                     </p>
                 </div>
             </ScrollReveal>
@@ -72,9 +72,9 @@ export default function About() {
             <ScrollReveal delay={0.3}>
                 <div class="bg-[var(--color-surface)]/70 backdrop-blur-sm rounded-3xl p-8 md:p-10 border border-[var(--color-border)] mt-6">
                     <p class="text-lg leading-[1.8] text-[var(--color-text)]">
-                        I'm comfortable working across the stack — from writing C/C++ for embedded platforms and OS internals to building web interfaces with modern frameworks like SolidJS. I believe great systems are invisible: they just work, blazingly fast, rock-solid, and elegant under the hood.
-                    </p>
-                </div>
+                        Industrial Design taught me that constraints aren't obstacles, they're where the interesting decisions happen. I've carried that into every system I've built since.
+                        </p>
+                    </div>
             </ScrollReveal>
 
             {/* Social links */}
@@ -105,8 +105,8 @@ export default function About() {
             <ScrollReveal delay={0.6}>
                 <div class="mt-8">
                     <a
-                        href="/resume.pdf"
-                        download="resume.pdf"
+                        href="/Resume.pdf"
+                        download="Resume.pdf"
                         class="inline-flex items-center gap-3 px-7 py-4 rounded-2xl bg-[var(--color-accent)] text-white font-semibold text-sm tracking-wide hover:bg-[var(--color-accent-light)] transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-[var(--color-accent)]/20 hover:-translate-y-0.5"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

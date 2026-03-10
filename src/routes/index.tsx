@@ -1,15 +1,31 @@
 import { createSignal, Switch, Match, onMount, onCleanup } from "solid-js";
+import { cache, createAsync } from "@solidjs/router";
+import { connectDB } from "~/lib/db";
+import { Project, Post } from "~/lib/models";
 import ScrollReveal from "~/components/ScrollReveal";
+
+const getPublicData = cache(async () => {
+  "use server";
+  await connectDB();
+  const projects = await Project.find().sort({ _id: -1 }).lean();
+  const posts = await Post.find().sort({ date: -1 }).lean();
+  return { 
+    projects: JSON.parse(JSON.stringify(projects)), 
+    posts: JSON.parse(JSON.stringify(posts)) 
+  };
+}, "public-data");
+
+export const route = { load: () => getPublicData() };
 import About from "~/components/About";
 import Experience from "~/components/Experience";
 import Projects from "~/components/Projects";
-import Blogs from "~/components/Blogs";
 import GitHubChart from "~/components/GitHubChart";
 import TechArsenal from "~/components/TechArsenal";
 
-type Tab = "about" | "experience" | "projects" | "blogs";
+type Tab = "about" | "experience" | "projects";
 
 export default function Home() {
+  const data = createAsync(() => getPublicData());
   const [activeTab, setActiveTab] = createSignal<Tab>("about");
   const [scrollY, setScrollY] = createSignal(0);
   const [nameSticky, setNameSticky] = createSignal(false);
@@ -18,17 +34,14 @@ export default function Home() {
     { id: "about", label: "About" },
     { id: "experience", label: "Experience" },
     { id: "projects", label: "Projects" },
-    { id: "blogs", label: "Blogs" }
   ];
 
   const thisAndThat = [
-    { emoji: "☕", text: "chai over coffee" },
+    { emoji: "☕", text: "coffee over chai" },
     { emoji: "🖥️", text: "terminal over GUI" },
     { emoji: "🌙", text: "late nights over early mornings" },
     { emoji: "⚡", text: "performance over convenience" },
-    { emoji: "🎧", text: "lo-fi over lyrics" },
-    { emoji: "📖", text: "man pages over Stack Overflow" },
-    { emoji: "🔧", text: "building tools over using tools" },
+    { emoji: "📖", text: "documentation over videos" },
     { emoji: "🐧", text: "Linux over Windows" },
     { emoji: "🌊", text: "flow state over multitasking" },
     { emoji: "🤝", text: "collaboration over competition" },
@@ -36,10 +49,10 @@ export default function Home() {
 
   const socials = [
     { icon: "🐙", label: "GitHub", url: "https://github.com/HrushikeshAnandSarangi" },
-    { icon: "💼", label: "LinkedIn", url: "https://linkedin.com/in/" },
-    { icon: "🐦", label: "Twitter / X", url: "https://x.com/" },
-    { icon: "📧", label: "Email", url: "mailto:hello@example.com" },
-    { icon: "📄", label: "Resume", url: "#" },
+    { icon: "💼", label: "LinkedIn", url: "https://www.linkedin.com/in/hrushikesh-anand-sarangi-645b02269/" },
+    { icon: "🐦", label: "Twitter / X", url: "https://x.com/anand_sarangi" },
+    { icon: "📧", label: "Email", url: "mailto:hrushikeshsarangi7@gmail.com" },
+    { icon: "📄", label: "Resume", url: "https://drive.google.com/drive/folders/1AInPFmWGadizscPrBR-rGpdiiZbFemo3?usp=sharing" },
   ];
 
   onMount(() => {
@@ -51,6 +64,12 @@ export default function Home() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     onCleanup(() => window.removeEventListener("scroll", handleScroll));
   });
+
+  const gifs = [
+    "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExbTY1a3cycWl2eTU1cHZxaW5jd3RtZXZyejhneWo3eWdvc2lkczR2YSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/N3yLGQ1oMYfGU/giphy.gif",
+    "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNjNjNXowbHM4aHdlZDduZWNydDM1ODVzOGNkazJ0MXU4eWd0Y253eCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/gH1jGsCnQBiFHWMFzh/giphy.gif"
+  ];
+  const randomGif = gifs[Math.floor(Math.random() * gifs.length)];
 
   return (
     <div class="w-full flex flex-col items-center flex-1">
@@ -83,65 +102,51 @@ export default function Home() {
       {/* ═══════════════════════════════════════
           HERO — Split layout with parallax
          ═══════════════════════════════════════ */}
-      <section class="w-full min-h-screen flex flex-col items-center justify-center px-6 md:px-12 lg:px-20 relative overflow-hidden">
+      <section class="w-full min-h-[85vh] md:h-screen flex flex-col items-center justify-center px-6 md:px-12 lg:px-20 pt-20 md:pt-28 relative overflow-hidden">
         {/* Centered name at top of hero */}
         <p
-          class={`text-sm font-semibold tracking-[0.3em] uppercase text-[var(--color-accent)] mb-12 anim-hidden animate-fade-in text-center transition-opacity duration-500 ${nameSticky() ? "opacity-0" : "opacity-100"}`}
+          class={`text-[10px] md:text-sm font-semibold tracking-[0.25em] md:tracking-[0.3em] uppercase text-[var(--color-accent)] mb-8 md:mb-12 anim-hidden animate-fade-in text-center transition-opacity duration-500 ${nameSticky() ? "opacity-0" : "opacity-100"}`}
         >
           Hrushikesh Anand Sarangi
         </p>
-        <div class="max-w-7xl mx-auto w-full grid grid-cols-1 md:grid-cols-5 gap-12 md:gap-8 items-end">
+        <div class="max-w-7xl mx-auto w-full grid grid-cols-1 md:grid-cols-5 gap-6 md:gap-8 items-center md:items-end">
           {/* Left — Bold headline with parallax */}
           <div
-            class="md:col-span-3 flex flex-col justify-center"
+            class="md:col-span-3 flex flex-col justify-center text-center md:text-left z-10"
             style={{ transform: `translateY(${scrollY() * 0.15}px)`, transition: "transform 0.1s linear" }}
           >
-            <h1 class="heading-serif text-5xl md:text-6xl lg:text-7xl text-[var(--color-text)] leading-[1.1] mb-8 anim-hidden animate-slide-up delay-1">
-              I architect and{" "}
-              <span class="font-mono text-[var(--color-accent)] font-normal tracking-tight">engineer()</span>
-              {" "}systems — from low-level internals to scalable infrastructure.
+            <h1 class="heading-serif text-5xl md:text-6xl lg:text-7xl text-[var(--color-text)] leading-[1.1] md:leading-[1.1] mb-2 md:mb-8 anim-hidden animate-slide-up delay-1 text-balance">
+              Systems engineer by{" "}
+              <span class="font-mono text-[var(--color-accent)] font-normal tracking-tight">obsession()</span>,
+              <br class="hidden md:block" />
+              {" "}Industrial Designer by accident.
             </h1>
           </div>
 
           {/* Right — Full-height waving avatar with parallax */}
           <div
-            class="md:col-span-2 flex justify-center md:justify-end items-end anim-hidden animate-scale-in delay-2"
-            style={{ transform: `translateY(${scrollY() * -0.1}px)`, transition: "transform 0.1s linear" }}
+            class="md:col-span-2 flex justify-center md:justify-end items-end anim-hidden animate-scale-in delay-2 mt-4 md:mt-0"
+            style={{ transform: `translateY(${scrollY() * -0.05}px)`, transition: "transform 0.1s linear" }}
           >
             <img
               src="/avatar.png"
               alt="Hrushikesh — waving hello"
-              class="w-auto object-contain object-bottom"
-              style={{ height: "85vh", "max-height": "85vh", "mix-blend-mode": "multiply" }}
+              class="w-auto object-contain object-bottom mix-blend-multiply h-[45vh] sm:h-[55vh] md:h-[65vh] lg:h-[70vh]"
             />
           </div>
         </div>
       </section>
 
       {/* ═══════════════════════════════════════
-          JOKE STRIP — AI slop pun
+          GIF STRIP
          ═══════════════════════════════════════ */}
-      <section class="w-full bg-[var(--color-deep)] py-16 md:py-20 px-6">
-        <p class="text-center text-xs font-medium tracking-[0.25em] uppercase text-[var(--color-accent-light)]/60 mb-8 italic" style={{ "font-family": "'Playfair Display', Georgia, serif" }}>
-          A small pun
-        </p>
-        <div class="max-w-5xl mx-auto flex flex-col md:flex-row items-center justify-center gap-10 md:gap-16">
-          {/* Quote */}
-          <ScrollReveal delay={0.1}>
-            <p class="text-xl md:text-2xl lg:text-3xl font-medium text-[var(--color-cream)] leading-snug max-w-md">
-              AI slop is just{" "}
-              <span class="italic text-[var(--color-accent-light)]" style={{ "font-family": "'Playfair Display', Georgia, serif" }}>
-                "Idhar se Aloo dalunga, Udhar se Sona niklega"
-              </span>
-            </p>
-          </ScrollReveal>
-
-          {/* Meme image */}
-          <ScrollReveal delay={0.3}>
+      <section class="w-full bg-[var(--color-deep)] py-16 md:py-24 px-6">
+        <div class="max-w-5xl mx-auto flex items-center justify-center">
+          <ScrollReveal delay={0.2}>
             <img
-              src="/rahul-gandhi-aloo-cover.jpg"
-              alt="Aloo to Sona meme"
-              class="w-64 md:w-72 rounded-2xl shadow-2xl border border-white/10 hover:scale-105 transition-transform duration-500"
+              src={randomGif}
+              alt="Funny GIF"
+              class="w-full max-w-[28rem] md:max-w-2xl rounded-2xl shadow-2xl border border-white/10 hover:scale-105 transition-transform duration-500 object-cover"
             />
           </ScrollReveal>
         </div>
@@ -184,10 +189,7 @@ export default function Home() {
                 <Experience />
               </Match>
               <Match when={activeTab() === "projects"}>
-                <Projects />
-              </Match>
-              <Match when={activeTab() === "blogs"}>
-                <Blogs />
+                <Projects projects={data()?.projects || []} />
               </Match>
             </Switch>
           </div>

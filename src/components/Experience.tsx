@@ -3,22 +3,22 @@ import ScrollReveal from "./ScrollReveal";
 export default function Experience() {
     const experiences = [
         {
-            role: "Systems Engineer",
-            company: "Infrastructure Co.",
-            duration: "2023 — Present",
-            description: "Architecting high-performance distributed systems, optimizing kernel-level networking stacks, and building internal tooling for infrastructure observability."
+            role: "Full Stack Intern",
+            company: "N6T Technologies(formerly Clinqo)",
+            duration: "2025",
+            description: "Engineered a full-stack EHR integration with Sysmex Analyzers, fully automating lab data entry to eliminate manual transcription errors and ensure data integrity. Handled client-side troubleshooting and production deployment, translating clinical requirements directly into software patches to maintain system stability."
         },
         {
-            role: "Embedded Software Developer",
-            company: "IoT Solutions",
-            duration: "2021 — 2023",
-            description: "Developed firmware for resource-constrained microcontrollers, wrote device drivers, and implemented real-time communication protocols for industrial IoT platforms."
+            role: "Web Developer",
+            company: "IEEE Indiscon",
+            duration: "2024-2025",
+            description: "Sole maintainer of the official IEEE INDISCON 2025 conference website. Responsible for keeping the site stable, updated, and performant throughout the conference lifecycle — translating event requirements into web updates under real deadline pressure."
         },
         {
-            role: "Junior Systems Developer",
-            company: "DevOps Startup",
-            duration: "2019 — 2021",
-            description: "Built CLI tools and automation pipelines in Go and Python, contributed to container runtime internals, and maintained CI/CD infrastructure."
+            role: "Freelancer",
+            company: "Stealth Startup",
+            duration: "2024 — Present",
+            description: "Independently contracted to build and deliver client web applications end to end. Handled requirements gathering, architecture decisions, frontend and backend implementation, and deployment"
         }
     ];
 

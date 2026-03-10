@@ -42,7 +42,7 @@ const categories: TechCategory[] = [
             { name: "Next.js", icon: devicon("nextjs") },
             { name: "SolidJS", icon: devicon("solidjs") },
             { name: "TailwindCSS", icon: devicon("tailwindcss") },
-            { name: "Deoxis" },
+            { name: "Dioxus" },
             { name: "Web3.js", icon: simpleIcon("web3dotjs", "F16822") },
         ],
     },
