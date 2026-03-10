@@ -140,13 +140,21 @@ export default function Home() {
       {/* ═══════════════════════════════════════
           GIF STRIP
          ═══════════════════════════════════════ */}
-      <section class="w-full bg-[var(--color-deep)] py-16 md:py-24 px-6">
-        <div class="max-w-5xl mx-auto flex items-center justify-center">
+      <section class="w-full bg-[var(--color-deep)] py-16 md:py-24 px-6 text-center">
+        <div class="max-w-5xl mx-auto flex flex-col items-center justify-center">
           <ScrollReveal delay={0.2}>
+            <div class="mb-10 md:mb-14">
+              <blockquote class="text-2xl md:text-3xl lg:text-4xl heading-serif text-white/90 leading-tight mb-6">
+                “People don’t read web pages. They scan them.”
+              </blockquote>
+              <p class="text-[var(--color-accent)] font-medium tracking-[0.2em] uppercase text-sm">
+                — Steve Krug
+              </p>
+            </div>
             <img
               src={randomGif}
               alt="Funny GIF"
-              class="w-full max-w-[28rem] md:max-w-2xl rounded-2xl shadow-2xl border border-white/10 hover:scale-105 transition-transform duration-500 object-cover"
+              class="w-full max-w-[28rem] md:max-w-2xl mx-auto rounded-2xl shadow-2xl border border-white/10 hover:scale-105 transition-transform duration-500 object-cover"
             />
           </ScrollReveal>
         </div>

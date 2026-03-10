@@ -1,5 +1,6 @@
 import { A, cache, createAsync } from "@solidjs/router";
 import { createSignal, createMemo, Show } from "solid-js";
+import { Portal } from "solid-js/web";
 import ScrollReveal from "~/components/ScrollReveal";
 import { connectDB } from "~/lib/db";
 import { Project } from "~/lib/models";
@@ -13,20 +14,97 @@ const getProjects = cache(async () => {
 
 export const route = { load: () => getProjects() };
 
+function PopupFilter(props: { tags: any[], selectedTag: string | null, setSelectedTag: (tag: string | null) => void }) {
+    const [isOpen, setIsOpen] = createSignal(false);
+    
+    return (
+        <div class="relative inline-block z-[9999]">
+            <button 
+                onClick={() => setIsOpen(true)}
+                class={`px-4 py-2 rounded-full text-xs font-semibold transition-all duration-300 flex items-center gap-2 ${isOpen() ? 'bg-[var(--color-accent)] text-white shadow-lg shadow-[var(--color-accent)]/20' : 'bg-[var(--color-surface)] text-[var(--color-text)] border border-[var(--color-border)] hover:border-[var(--color-accent)]/40 hover:shadow-md'}`}
+            >
+                More Tags
+                <span class={`flex items-center justify-center w-5 h-5 rounded-full text-[10px] font-bold ${isOpen() ? 'bg-white/20 text-white' : 'bg-[var(--color-border)]/50 text-[var(--color-text-muted)]'}`}>
+                    +{props.tags.length - 6}
+                </span>
+            </button>
+            
+            {/* Elegant Modal Pop-up */}
+            <Show when={isOpen()}>
+                <Portal>
+                    <div class="fixed inset-0 z-[99999] flex items-center justify-center p-4">
+                        {/* Backdrop */}
+                        <div 
+                            class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity"
+                            onClick={() => setIsOpen(false)}
+                        />
+                        
+                        {/* Modal Content */}
+                        <div class="relative w-full max-w-lg bg-[var(--color-surface)]/95 backdrop-blur-2xl border border-[var(--color-border)]/50 rounded-3xl shadow-2xl p-6 sm:p-8 animate-scale-in">
+                            <div class="flex justify-between items-center mb-6">
+                                <div>
+                                    <h3 class="text-xl font-bold text-[var(--color-text)] mb-1">More Filters</h3>
+                                    <p class="text-xs text-[var(--color-text-muted)]">Select a tag to filter projects</p>
+                                </div>
+                                <button 
+                                    onClick={() => setIsOpen(false)}
+                                    class="p-2 rounded-full hover:bg-[var(--color-border)]/50 text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                </button>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 max-h-[60vh] overflow-y-auto custom-scrollbar pr-2">
+                                {props.tags.slice(6).map(tag => (
+                                    <button 
+                                        onClick={() => { props.setSelectedTag(tag.name); setIsOpen(false); }}
+                                        class={`w-full text-left px-4 py-3 rounded-2xl text-xs font-semibold transition-all duration-300 flex flex-col gap-1 group relative overflow-hidden ${props.selectedTag === tag.name ? 'text-white shadow-md bg-[var(--color-accent)]' : 'text-[var(--color-text)] hover:bg-[var(--color-text)]/5 border border-[var(--color-border)]/50 hover:border-[var(--color-accent)]/60'}`}
+                                    >
+                                        <span class="truncate w-full relative z-10">{tag.name}</span>
+                                        <span class={`text-[10px] font-bold relative z-10 transition-colors ${props.selectedTag === tag.name ? 'text-white/80' : 'text-[var(--color-text-muted)] group-hover:text-[var(--color-accent)]/80'}`}>
+                                            {tag.count} {tag.count === 1 ? 'Project' : 'Projects'}
+                                        </span>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </Portal>
+            </Show>
+        </div>
+    );
+}
+
 export default function ProjectsPage() {
     const projects = createAsync(() => getProjects());
     const [searchQuery, setSearchQuery] = createSignal("");
     const [selectedTag, setSelectedTag] = createSignal<string | null>(null);
 
-    // Extract unique tags securely from arrays and strings
+    // Extract unique tags securely from arrays and strings, ordered by frequency
     const uniqueTags = createMemo(() => {
         const pList = projects() || [];
-        const tags = new Set<string>();
+        const tagCounts = new Map<string, number>();
+        
         pList.forEach((p: any) => {
-            if (p.tag) tags.add(p.tag);
-            if (Array.isArray(p.techStack)) p.techStack.forEach((t: string) => tags.add(t));
+            if (p.tag) {
+                tagCounts.set(p.tag, (tagCounts.get(p.tag) || 0) + 1);
+            }
+            if (Array.isArray(p.techStack)) {
+                p.techStack.forEach((t: string) => {
+                    tagCounts.set(t, (tagCounts.get(t) || 0) + 1);
+                });
+            }
         });
-        return Array.from(tags).sort();
+        
+        // Sort by frequency (descending), then alphabetically for ties
+        return Array.from(tagCounts.entries())
+            .sort((a, b) => {
+                if (b[1] !== a[1]) return b[1] - a[1];
+                return a[0].localeCompare(b[0]);
+            })
+            .map(entry => ({ name: entry[0], count: entry[1] }));
     });
 
     // Reactive filter logic
@@ -62,7 +140,7 @@ export default function ProjectsPage() {
                     </p>
 
                     {/* Search & Filter Controls */}
-                    <div class="flex flex-col md:flex-row gap-4 mb-14">
+                    <div class="flex flex-col md:flex-row gap-4 mb-8">
                         <div class="relative flex-1 max-w-md">
                             <span class="absolute inset-y-0 left-4 flex items-center text-gray-400">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
@@ -79,21 +157,48 @@ export default function ProjectsPage() {
 
                     {/* Tags */}
                     <Show when={uniqueTags().length > 0}>
-                        <div class="flex flex-wrap gap-2 mb-10">
+                        <div class="mb-14 flex flex-wrap gap-2 items-center relative z-[60]">
+                            <span class="text-xs font-semibold tracking-wider uppercase text-[var(--color-text-muted)] mr-2">Filter by:</span>
                             <button 
                                 onClick={() => setSelectedTag(null)}
-                                class={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${!selectedTag() ? 'bg-[var(--color-text)] text-white' : 'bg-[var(--color-surface)] text-[var(--color-text-muted)] hover:bg-[var(--color-border)]'}`}
+                                class={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${!selectedTag() ? 'bg-[var(--color-text)] text-white shadow-sm' : 'bg-transparent text-[var(--color-text-muted)] hover:bg-[var(--color-surface)] hover:text-[var(--color-text)] border border-[var(--color-border)]'}`}
                             >
-                                All
+                                All Projects
                             </button>
-                            {uniqueTags().map(tag => (
-                                <button 
-                                    onClick={() => setSelectedTag(tag)}
-                                    class={`px-4 py-2 rounded-xl text-sm font-semibold transition-all ${selectedTag() === tag ? 'bg-[var(--color-accent)] text-white' : 'bg-[var(--color-surface)] text-[var(--color-text-muted)] hover:bg-[var(--color-border)]'}`}
-                                >
-                                    {tag}
-                                </button>
-                            ))}
+                            
+                            {/* Top 6 tags + any actively selected tag that isn't in top 6 */}
+                            {(() => {
+                                const allTags = uniqueTags();
+                                const topTags = allTags.slice(0, 6);
+                                const selected = selectedTag();
+                                
+                                // Ensure currently selected tag is visible in the row if it's not in the top 6
+                                if (selected && !topTags.find(t => t.name === selected)) {
+                                    const selectedTagItem = allTags.find(t => t.name === selected);
+                                    if (selectedTagItem) {
+                                        topTags.push(selectedTagItem);
+                                    }
+                                }
+                                
+                                return topTags.map(tag => (
+                                    <button 
+                                        onClick={() => setSelectedTag(tag.name)}
+                                        class={`px-3 py-1.5 rounded-full text-xs font-medium transition-all flex items-center gap-1.5 ${selectedTag() === tag.name ? 'bg-[var(--color-accent)] text-white shadow-sm' : 'bg-transparent text-[var(--color-text-muted)] hover:bg-[var(--color-surface)] hover:text-[var(--color-text)] border border-[var(--color-border)]'}`}
+                                    >
+                                        {tag.name}
+                                        <span class={`text-[10px] ${selectedTag() === tag.name ? 'opacity-80' : 'opacity-50'}`}>{tag.count}</span>
+                                    </button>
+                                ));
+                            })()}
+
+                            {/* Dropdown for remaining tags */}
+                            <Show when={uniqueTags().length > 6}>
+                                <PopupFilter 
+                                    tags={uniqueTags()} 
+                                    selectedTag={selectedTag()} 
+                                    setSelectedTag={setSelectedTag} 
+                                />
+                            </Show>
                         </div>
                     </Show>
                 </ScrollReveal>

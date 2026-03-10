@@ -5,6 +5,27 @@ import DOMPurify from "dompurify";
 import ScrollReveal from "./ScrollReveal";
 
 export default function Projects(props: { projects: any[] }) {
+    const sortedProjects = () => {
+        if (!props.projects) return [];
+        
+        const hasRust = (p: any) => 
+            p.tag?.toLowerCase() === 'rust' || 
+            p.techStack?.some((t: string) => t.toLowerCase() === 'rust');
+            
+        return [...props.projects].sort((a, b) => {
+            const aRust = hasRust(a);
+            const bRust = hasRust(b);
+            if (aRust && !bRust) return -1;
+            if (!aRust && bRust) return 1;
+            return 0;
+        }).slice(0, 3);
+    };
+
+    const truncateText = (text: string, maxLength: number = 150) => {
+        if (!text) return "";
+        return text.length > maxLength ? text.substring(0, maxLength).trim() + "..." : text;
+    };
+
     return (
         <section>
             <ScrollReveal>
@@ -17,8 +38,8 @@ export default function Projects(props: { projects: any[] }) {
             </ScrollReveal>
 
             <div class="space-y-12">
-                <Show when={props.projects && props.projects.length > 0} fallback={<p class="text-center text-[var(--color-text-muted)] italic py-10">No projects found.</p>}>
-                    {props.projects.map((project: any, i: number) => {
+                <Show when={sortedProjects().length > 0} fallback={<p class="text-center text-[var(--color-text-muted)] italic py-10">No projects found.</p>}>
+                    {sortedProjects().map((project: any, i: number) => {
                         const isEven = i % 2 === 0;
                         return (
                             <ScrollReveal delay={0.12 * (i + 1)}>
@@ -37,7 +58,7 @@ export default function Projects(props: { projects: any[] }) {
                                         <h3 class="text-2xl font-bold text-[var(--color-text)] mb-3">
                                             {project.title}
                                         </h3>
-                                        <div class="text-sm text-[var(--color-text-muted)] leading-relaxed mb-5 prose prose-sm max-w-none" innerHTML={DOMPurify.sanitize(marked(project.description, { async: false }) as string)} />
+                                        <div class="text-sm text-[var(--color-text-muted)] leading-relaxed mb-5 prose prose-sm max-w-none" innerHTML={DOMPurify.sanitize(marked(truncateText(project.description), { async: false }) as string)} />
 
                                         {/* Tech tags */}
                                         <div class="flex flex-wrap gap-2 mb-6">
@@ -55,14 +76,15 @@ export default function Projects(props: { projects: any[] }) {
 
                                         {/* Learn more button */}
                                         <div class="flex gap-4 items-center">
+                                            <A
+                                                href={`/projects/${project._id}`}
+                                                class="inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-accent)] hover:text-[var(--color-accent-light)] transition-colors duration-300 group"
+                                            >
+                                                Learn More
+                                                <span class="group-hover:translate-x-1 transition-transform duration-300">→</span>
+                                            </A>
                                             <Show when={project.link}>
-                                                <a
-                                                    href={project.link} target="_blank" rel="noreferrer"
-                                                    class="inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-accent)] hover:text-[var(--color-accent-light)] transition-colors duration-300 group"
-                                                >
-                                                    Live Demo
-                                                    <span class="group-hover:translate-x-1 transition-transform duration-300">→</span>
-                                                </a>
+                                                <a href={project.link} target="_blank" rel="noreferrer" class="text-sm font-semibold text-[var(--color-text-muted)] hover:text-blue-600">Live Demo</a>
                                             </Show>
                                             <Show when={project.github}>
                                                 <a href={project.github} target="_blank" rel="noreferrer" class="text-sm font-semibold text-[var(--color-text-muted)] hover:text-black">GitHub</a>
