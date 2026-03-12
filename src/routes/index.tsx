@@ -68,8 +68,6 @@ export default function Home() {
   const gifs = [
     "https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExbTY1a3cycWl2eTU1cHZxaW5jd3RtZXZyejhneWo3eWdvc2lkczR2YSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/N3yLGQ1oMYfGU/giphy.gif",
     "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExNjNjNXowbHM4aHdlZDduZWNydDM1ODVzOGNkazJ0MXU4eWd0Y253eCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/gH1jGsCnQBiFHWMFzh/giphy.gif",
-    "https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExZnZ6MGZmY2N4a2w2dG5hMGRwZjgwY2x5cncxeTZ0N2xqaGhpOGRidyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ckr4W2ppxPBeIF8dx4/giphy.gif",
-    "https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExdTB6OGR2enB1czQzbHg2cHIzbTU2YWg3cHh1ZzI1NHl4dTV1eWNyNSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l19ipdY2pjK3d8Omtz/giphy.gif"
   ];
   const randomGif = gifs[Math.floor(Math.random() * gifs.length)];
 
