@@ -19,6 +19,7 @@ const projectSchema = new mongoose.Schema({
     type: [{ title: String, link: String }],
     default: [],
   },
+  views: { type: Number, default: 0 },
 });
 
 const postSchema = new mongoose.Schema({
@@ -28,6 +29,12 @@ const postSchema = new mongoose.Schema({
   date: { type: Date, default: Date.now },
 });
 
+const analyticsSchema = new mongoose.Schema({
+  path: { type: String, required: true, unique: true },
+  views: { type: Number, default: 0 },
+});
+
 export const User = mongoose.models.User || mongoose.model('User', userSchema);
 export const Project = mongoose.models.Project || mongoose.model('Project', projectSchema);
 export const Post = mongoose.models.Post || mongoose.model('Post', postSchema);
+export const Analytics = mongoose.models.Analytics || mongoose.model('Analytics', analyticsSchema);

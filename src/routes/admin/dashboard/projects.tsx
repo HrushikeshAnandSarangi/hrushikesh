@@ -247,6 +247,11 @@ export default function ManageProjects() {
             <div>
               <h3 class="font-bold text-lg">{proj.title}</h3>
               <p class="text-sm text-gray-600 line-clamp-1">{proj.description}</p>
+              <div class="flex items-center gap-2 mt-1">
+                <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-blue-50 text-blue-600 border border-blue-100">
+                  👁️ {proj.views || 0} views
+                </span>
+              </div>
             </div>
             <div class="flex gap-2 flex-shrink-0">
               <button onClick={() => handleEdit(proj)} class="px-3 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 text-sm">

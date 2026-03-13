@@ -4,10 +4,12 @@ import { Portal } from "solid-js/web";
 import ScrollReveal from "~/components/ScrollReveal";
 import { connectDB } from "~/lib/db";
 import { Project } from "~/lib/models";
+import { incrementPageView } from "~/lib/analytics";
 
 const getProjects = cache(async () => {
     "use server";
     await connectDB();
+    await incrementPageView('/projects');
     const projects = await Project.find().sort({ _id: -1 }).lean();
     return JSON.parse(JSON.stringify(projects));
 }, "all-projects");

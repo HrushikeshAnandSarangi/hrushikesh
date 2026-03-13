@@ -5,6 +5,7 @@ import DOMPurify from "dompurify";
 import ScrollReveal from "~/components/ScrollReveal";
 import { connectDB } from "~/lib/db";
 import { Project } from "~/lib/models";
+import { incrementProjectView } from "~/lib/analytics";
 
 const getProject = cache(async (id: string) => {
     "use server";
@@ -12,6 +13,9 @@ const getProject = cache(async (id: string) => {
     if (!id) return null;
     try {
         const project = await Project.findById(id).lean();
+        if (project) {
+            await incrementProjectView(id);
+        }
         return JSON.parse(JSON.stringify(project));
     } catch (e) {
         return null;
