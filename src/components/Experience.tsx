@@ -3,6 +3,12 @@ import ScrollReveal from "./ScrollReveal";
 export default function Experience() {
     const experiences = [
         {
+            role: "SDE Intern",
+            company: "Auric Ai Labs",
+            duration: "April 2026 - July 2026",
+            description: "Developing software for cutting-edge AI-powered autonomous tactical unmanned systems for the Indian Defense Forces. Contributing to robust engineering and mission-focused design to ensure technological superiority in defense applications."
+        },
+        {
             role: "Full Stack Intern",
             company: "N6T Technologies(formerly Clinqo)",
             duration: "2025",

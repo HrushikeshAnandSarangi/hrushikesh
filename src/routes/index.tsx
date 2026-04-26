@@ -50,9 +50,10 @@ export default function Home() {
   const socials = [
     { icon: "🐙", label: "GitHub", url: "https://github.com/HrushikeshAnandSarangi" },
     { icon: "💼", label: "LinkedIn", url: "https://www.linkedin.com/in/hrushikesh-anand-sarangi-645b02269/" },
-    { icon: "🐦", label: "Twitter / X", url: "https://x.com/anand_sarangi" },
+    { icon: "🐦", label: "Twitter / X", url: "https://x.com/AnandHrushikesh" },
     { icon: "📧", label: "Email", url: "mailto:hrushikeshsarangi7@gmail.com" },
     { icon: "📄", label: "Resume", url: "https://drive.google.com/drive/folders/1AInPFmWGadizscPrBR-rGpdiiZbFemo3?usp=sharing" },
+    { icon: "🤖", label: "Bot View", url: "/bot" },
   ];
 
   onMount(() => {
