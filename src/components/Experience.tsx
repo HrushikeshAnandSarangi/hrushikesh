@@ -3,6 +3,12 @@ import ScrollReveal from "./ScrollReveal";
 export default function Experience() {
     const experiences = [
         {
+            role: "Open Source Contributor",
+            company: "WarpLLM",
+            duration: "Aug 2026 - Present",
+            description: "Helping build WarpLLM — a blazingly fast router for LLMs. Contributing to low-latency request routing and load distribution across inference backends, optimizing the path between prompts and models for maximum throughput."
+        },
+        {
             role: "SDE Intern",
             company: "Auric Ai Labs",
             duration: "April 2026 - July 2026",

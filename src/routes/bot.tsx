@@ -44,6 +44,11 @@ export default function BotPage() {
         <h2 class="text-2xl font-semibold mb-6 text-[var(--color-text)]">Experience</h2>
         <div class="space-y-8">
           <div>
+            <h3 class="text-xl font-medium text-[var(--color-accent)]">Open Source Contributor @ WarpLLM</h3>
+            <p class="text-sm text-[var(--color-text-muted)] mb-2">Aug 2026 - Present</p>
+            <p class="text-[var(--color-text)]">Helping build WarpLLM — a blazingly fast router for LLMs. Contributing to low-latency request routing and load distribution across inference backends, optimizing the path between prompts and models for maximum throughput.</p>
+          </div>
+          <div>
             <h3 class="text-xl font-medium text-[var(--color-accent)]">SDE Intern @ Auric Ai Labs</h3>
             <p class="text-sm text-[var(--color-text-muted)] mb-2">April 2026 - July 2026</p>
             <p class="text-[var(--color-text)]">Developing software for cutting-edge AI-powered autonomous tactical unmanned systems for the Indian Defense Forces. Contributing to robust engineering and mission-focused design to ensure technological superiority in defense applications.</p>

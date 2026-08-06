@@ -1,7 +1,8 @@
-import { createSignal, Switch, Match, onMount, onCleanup } from "solid-js";
-import { cache, createAsync } from "@solidjs/router";
+import { createSignal, Switch, Match, onMount, onCleanup, Show } from "solid-js";
+import { cache, createAsync, action, useSubmission } from "@solidjs/router";
+import { Portal } from "solid-js/web";
 import { connectDB } from "~/lib/db";
-import { Project, Post } from "~/lib/models";
+import { Project, Post, Message } from "~/lib/models";
 import ScrollReveal from "~/components/ScrollReveal";
 
 const getPublicData = cache(async () => {
@@ -14,6 +15,21 @@ const getPublicData = cache(async () => {
     posts: JSON.parse(JSON.stringify(posts)) 
   };
 }, "public-data");
+
+const submitChat = action(async (formData: FormData) => {
+  "use server";
+  const name = formData.get("name") as string;
+  const email = formData.get("email") as string;
+  const message = formData.get("message") as string;
+  
+  if (!name || !email || !message) {
+    throw new Error("All fields are required");
+  }
+  
+  await connectDB();
+  await Message.create({ name, email, message });
+  return { success: true };
+}, "submit-chat");
 
 export const route = { load: () => getPublicData() };
 import About from "~/components/About";
@@ -29,6 +45,9 @@ export default function Home() {
   const [activeTab, setActiveTab] = createSignal<Tab>("about");
   const [scrollY, setScrollY] = createSignal(0);
   const [nameSticky, setNameSticky] = createSignal(false);
+  const [isChatOpen, setIsChatOpen] = createSignal(false);
+  
+  const chatSub = useSubmission(submitChat);
 
   const tabs: { id: Tab; label: string }[] = [
     { id: "about", label: "About" },
@@ -226,17 +245,60 @@ export default function Home() {
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-0">
             {/* Left — Preferences */}
-            <div class="space-y-5">
-              {thisAndThat.map((item, i) => (
-                <ScrollReveal delay={0.08 * (i + 1)}>
-                  <div class="flex items-center gap-4 group cursor-default">
-                    <span class="text-2xl select-none group-hover:scale-125 transition-transform duration-300">{item.emoji}</span>
-                    <p class="text-lg text-[var(--color-text)] font-light leading-relaxed group-hover:text-[var(--color-accent)] transition-colors duration-300">
-                      {item.text}
-                    </p>
+            <div class="h-full flex flex-col">
+              <div class="space-y-5">
+                {thisAndThat.map((item, i) => (
+                  <ScrollReveal delay={0.08 * (i + 1)}>
+                    <div class="flex items-center gap-4 group cursor-default">
+                      <span class="text-2xl select-none group-hover:scale-125 transition-transform duration-300">{item.emoji}</span>
+                      <p class="text-lg text-[var(--color-text)] font-light leading-relaxed group-hover:text-[var(--color-accent)] transition-colors duration-300">
+                        {item.text}
+                      </p>
+                    </div>
+                  </ScrollReveal>
+                ))}
+              </div>
+
+              {/* Contextual Actions */}
+              <div class="mt-auto pt-10">
+                <ScrollReveal delay={0.45}>
+                  <div class="flex flex-col gap-8 max-w-sm border-t border-[var(--color-border)] pt-8">
+                    
+                    {/* Chat Action */}
+                    <div class="flex flex-col gap-3">
+                      <p class="text-[var(--color-text)] font-serif italic font-bold text-[16px]">
+                        Want to collaborate or discuss a project?
+                      </p>
+                      <button
+                        onClick={(e) => { e.preventDefault(); setIsChatOpen(true); }}
+                        class="w-full flex items-center justify-start gap-3 px-6 py-4 rounded-xl bg-[var(--color-accent)] hover:bg-[var(--color-accent-light)] transition-all shadow-lg shadow-[var(--color-accent)]/30 hover:-translate-y-1"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white/90" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                        </svg>
+                        <span class="text-base text-white font-bold tracking-wide">Chat with me</span>
+                      </button>
+                    </div>
+
+                    {/* Books Action */}
+                    <div class="flex flex-col gap-3">
+                      <p class="text-[var(--color-text)] font-serif italic font-bold text-[16px]">
+                        Haven't found a common interest yet?
+                      </p>
+                      <a
+                        href="/books"
+                        class="w-full flex items-center justify-start gap-3 px-6 py-4 rounded-xl bg-[var(--color-accent)] hover:bg-[var(--color-accent-light)] transition-all shadow-lg shadow-[var(--color-accent)]/30 hover:-translate-y-1"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white/90" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                        </svg>
+                        <span class="text-base text-white font-bold tracking-wide">Explore my bookshelf</span>
+                      </a>
+                    </div>
+
                   </div>
                 </ScrollReveal>
-              ))}
+              </div>
             </div>
 
             {/* Right — Socials, Resume, Spotify */}
@@ -248,10 +310,11 @@ export default function Home() {
                   <div class="rounded-2xl overflow-hidden border border-[var(--color-border)] shadow-sm">
                     <iframe
                       style={{ "border-radius": "12px" }}
-                      src="https://open.spotify.com/embed/playlist/37i9dQZF1DXcBWIGoYBM5M?utm_source=generator&theme=0"
+                      src="https://open.spotify.com/embed/playlist/4Xa0nk9omuWafSPuWVgWsj?utm_source=generator&si=05de88edc17f449f"
                       width="100%"
-                      height="152"
-                      frameborder="0"
+                      height="352"
+                      frameBorder="0"
+                      allowfullscreen=""
                       allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
                       loading="lazy"
                     />
@@ -292,6 +355,94 @@ export default function Home() {
           <GitHubChart />
         </div>
       </section>
+
+      {/* Chat Modal Popup */}
+      <Show when={isChatOpen()}>
+        <Portal>
+          <div class="fixed inset-0 z-[99999] flex items-center justify-center p-4">
+            <div 
+              class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+              onClick={() => setIsChatOpen(false)}
+            />
+            <div class="relative w-full max-w-md bg-[var(--color-surface)] border border-[var(--color-border)] rounded-3xl shadow-2xl p-6 sm:p-8 animate-scale-in">
+              <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-[var(--color-text)]">Say Hello 👋</h3>
+                <button 
+                  onClick={() => setIsChatOpen(false)}
+                  class="p-2 rounded-full hover:bg-[var(--color-border)] text-[var(--color-text-muted)] hover:text-[var(--color-text)] transition-colors"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              <Show when={chatSub.result?.success} fallback={
+                <form action={submitChat} method="post" class="space-y-4">
+                  <div>
+                    <label class="block text-sm font-medium text-[var(--color-text)] mb-1">Name</label>
+                    <input 
+                      type="text" 
+                      name="name" 
+                      required 
+                      class="w-full px-4 py-3 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] transition-all"
+                      placeholder="John Doe"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-[var(--color-text)] mb-1">Email</label>
+                    <input 
+                      type="email" 
+                      name="email" 
+                      required 
+                      class="w-full px-4 py-3 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] transition-all"
+                      placeholder="john@example.com"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-sm font-medium text-[var(--color-text)] mb-1">Message</label>
+                    <textarea 
+                      name="message" 
+                      required 
+                      rows={4}
+                      class="w-full px-4 py-3 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] transition-all resize-none"
+                      placeholder="Hey Hrushikesh, let's connect!"
+                    />
+                  </div>
+                  
+                  <Show when={chatSub.error}>
+                    <p class="text-sm text-red-500">{chatSub.error.message}</p>
+                  </Show>
+
+                  <button 
+                    type="submit" 
+                    disabled={chatSub.pending}
+                    class="w-full mt-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-xl transition-colors disabled:opacity-70 flex justify-center items-center"
+                  >
+                    {chatSub.pending ? "Sending..." : "Send Message"}
+                  </button>
+                </form>
+              }>
+                <div class="py-10 flex flex-col items-center justify-center text-center">
+                  <div class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                  <h4 class="text-xl font-bold text-[var(--color-text)] mb-2">Message Sent!</h4>
+                  <p class="text-[var(--color-text-muted)]">Thanks for reaching out. I'll get back to you soon.</p>
+                  <button 
+                    onClick={() => setIsChatOpen(false)}
+                    class="mt-6 px-6 py-2 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl font-medium hover:bg-gray-50 transition-colors"
+                  >
+                    Close
+                  </button>
+                </div>
+              </Show>
+            </div>
+          </div>
+        </Portal>
+      </Show>
     </div>
   );
 }

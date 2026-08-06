@@ -28,14 +28,14 @@ export default function Footer() {
               </div>
               <div class="flex flex-col gap-3.5">
                 <h3 class="font-semibold text-[var(--color-cream)]/40 uppercase tracking-[0.2em] text-xs mb-1">Connect</h3>
-                <a href="https://github.com/HrushikeshAnandSarangi" target="_blank" class="text-[var(--color-cream)]/70 hover:text-[var(--color-cream)] transition-colors duration-300">GitHub</a>
-                <a href="#" class="text-[var(--color-cream)]/70 hover:text-[var(--color-cream)] transition-colors duration-300">LinkedIn</a>
-                <a href="#" class="text-[var(--color-cream)]/70 hover:text-[var(--color-cream)] transition-colors duration-300">Twitter / X</a>
+                <a href="https://github.com/HrushikeshAnandSarangi" target="_blank" rel="noopener noreferrer" class="text-[var(--color-cream)]/70 hover:text-[var(--color-cream)] transition-colors duration-300">GitHub</a>
+                <a href="https://www.linkedin.com/in/hrushikesh-anand-sarangi-645b02269/" target="_blank" rel="noopener noreferrer" class="text-[var(--color-cream)]/70 hover:text-[var(--color-cream)] transition-colors duration-300">LinkedIn</a>
+                <a href="https://x.com/AnandHrushikesh" target="_blank" rel="noopener noreferrer" class="text-[var(--color-cream)]/70 hover:text-[var(--color-cream)] transition-colors duration-300">Twitter / X</a>
               </div>
               <div class="flex flex-col gap-3.5">
                 <h3 class="font-semibold text-[var(--color-cream)]/40 uppercase tracking-[0.2em] text-xs mb-1">Contact</h3>
-                <a href="mailto:hello@example.com" class="text-[var(--color-cream)]/70 hover:text-[var(--color-cream)] transition-colors duration-300">Email</a>
-                <a href="#" class="text-[var(--color-cream)]/70 hover:text-[var(--color-cream)] transition-colors duration-300">Resume</a>
+                <a href="mailto:hrushikeshsarangi7@gmail.com" class="text-[var(--color-cream)]/70 hover:text-[var(--color-cream)] transition-colors duration-300">Email</a>
+                <a href="https://drive.google.com/drive/folders/1AInPFmWGadizscPrBR-rGpdiiZbFemo3?usp=sharing" target="_blank" rel="noopener noreferrer" class="text-[var(--color-cream)]/70 hover:text-[var(--color-cream)] transition-colors duration-300">Resume</a>
               </div>
             </div>
           </div>

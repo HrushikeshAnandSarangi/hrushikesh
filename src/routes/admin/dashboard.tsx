@@ -36,6 +36,8 @@ export default function AdminDashboardLayout(props: any) {
             <A href="/admin/dashboard" end class="block text-[var(--color-cream)]/70 hover:text-white transition-colors py-2 px-3 rounded hover:bg-white/10" activeClass="bg-white/10 text-white font-medium">Overview</A>
             <A href="/admin/dashboard/projects" class="block text-[var(--color-cream)]/70 hover:text-white transition-colors py-2 px-3 rounded hover:bg-white/10" activeClass="bg-white/10 text-white font-medium">Projects</A>
             <A href="/admin/dashboard/posts" class="block text-[var(--color-cream)]/70 hover:text-white transition-colors py-2 px-3 rounded hover:bg-white/10" activeClass="bg-white/10 text-white font-medium">Posts</A>
+            <A href="/admin/dashboard/books" class="block text-[var(--color-cream)]/70 hover:text-white transition-colors py-2 px-3 rounded hover:bg-white/10" activeClass="bg-white/10 text-white font-medium">Books</A>
+            <A href="/admin/dashboard/messages" class="block text-[var(--color-cream)]/70 hover:text-white transition-colors py-2 px-3 rounded hover:bg-white/10" activeClass="bg-white/10 text-white font-medium">Messages</A>
           </nav>
         </div>
         

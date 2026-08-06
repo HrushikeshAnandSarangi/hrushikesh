@@ -38,3 +38,20 @@ export const User = mongoose.models.User || mongoose.model('User', userSchema);
 export const Project = mongoose.models.Project || mongoose.model('Project', projectSchema);
 export const Post = mongoose.models.Post || mongoose.model('Post', postSchema);
 export const Analytics = mongoose.models.Analytics || mongoose.model('Analytics', analyticsSchema);
+
+const messageSchema = new mongoose.Schema({
+  name: { type: String, required: true },
+  email: { type: String, required: true },
+  message: { type: String, required: true },
+  date: { type: Date, default: Date.now },
+});
+
+const bookSchema = new mongoose.Schema({
+  title: { type: String, required: true },
+  description: { type: String, required: true },
+  imageUrl: { type: String, required: true },
+});
+
+export const Message = mongoose.models.Message || mongoose.model('Message', messageSchema);
+export const Book = mongoose.models.Book || mongoose.model('Book', bookSchema);
+
