@@ -35,13 +35,16 @@ export const route = { load: () => getPublicData() };
 import About from "~/components/About";
 import Experience from "~/components/Experience";
 import Projects from "~/components/Projects";
+import OpenSource from "~/components/OpenSource";
 import GitHubChart from "~/components/GitHubChart";
 import TechArsenal from "~/components/TechArsenal";
+import { GITHUB_USERNAME, getOpenSourceContributions } from "~/lib/github";
 
-type Tab = "about" | "experience" | "projects";
+type Tab = "about" | "experience" | "projects" | "opensource";
 
 export default function Home() {
   const data = createAsync(() => getPublicData());
+  const openSource = createAsync(() => getOpenSourceContributions(GITHUB_USERNAME));
   const [activeTab, setActiveTab] = createSignal<Tab>("about");
   const [scrollY, setScrollY] = createSignal(0);
   const [nameSticky, setNameSticky] = createSignal(false);
@@ -53,6 +56,7 @@ export default function Home() {
     { id: "about", label: "About" },
     { id: "experience", label: "Experience" },
     { id: "projects", label: "Projects" },
+    { id: "opensource", label: "Open Source" },
   ];
 
   const thisAndThat = [
@@ -218,6 +222,9 @@ export default function Home() {
               </Match>
               <Match when={activeTab() === "projects"}>
                 <Projects projects={data()?.projects || []} />
+              </Match>
+              <Match when={activeTab() === "opensource"}>
+                <OpenSource orgs={openSource() || []} />
               </Match>
             </Switch>
           </div>
